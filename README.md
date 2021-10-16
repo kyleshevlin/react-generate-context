@@ -18,10 +18,10 @@ const useGetCounterValue = ({ startingCount }) => {
   const [state, setState] = React.useState(startingCount)
   const handlers = React.useMemo(
     () => ({
-      increment: () => {
+      inc: () => {
         setState(s => s + 1)
       },
-      decrement: () => {
+      dec: () => {
         setState(s => s - 1)
       },
     }),
@@ -114,10 +114,10 @@ const useGetCounterValue = ({ startingCount }: Props): Context => {
   const [state, setState] = React.useState(startingCount)
   const handlers = React.useMemo(
     () => ({
-      increment: () => {
+      inc: () => {
         setState(s => s + 1)
       },
-      decrement: () => {
+      dec: () => {
         setState(s => s - 1)
       },
     }),
