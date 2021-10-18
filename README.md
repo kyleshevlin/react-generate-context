@@ -4,7 +4,7 @@
 
 Creating a new React Context involves a few steps. `react-generate-context` removes a couple of those steps.
 
-The `react-generate-context` package is a single function, `generateContext`, that generates a React Context (in closure) and returns to you the Provider and custom hook to access it in one step. All you need to do is give it a function the generate the `value` prop for your Context. Let's go through an example:
+The `react-generate-context` package is a single function, `generateContext`, that generates a React Context (in closure) and returns to you the Provider and custom hook to access it in one step. All you need to do is give it a function that creates and updates the `value` prop for your Context. Let's go through an example:
 
 ```javascript
 import generateContext from 'react-generate-context'
