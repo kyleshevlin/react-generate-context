@@ -160,7 +160,7 @@ const MyContext = React.createContext()
 const useMyContext = () => React.useContext(MyContext)
 
 const MyProvider = ({ children }) => {
-  const value = useGetMyContextValue()
+  const value = useMyContext()
 
   return (
     <MyContext.Provider value={value}>
