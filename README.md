@@ -156,10 +156,12 @@ Reducing boilerplate aside, there's one other good reason to use a helper like `
 The Provider returned to you does not allow you to put _any_ components or elements in the same scope where the state change for the context is occurring. This prevents you from making a mistake that causes unnecessary rerendering. For example:
 
 ```javascript
-// An imaginary hook that manages the state of the `value` for our custom Provider
+import React from 'react'
+import SomeOtherFeature from './SomeOtherFeature'
 import useManageValue from './useManageValue'
 
 const MyContext = React.createContext()
+const useMyContext = () => React.useContext(MyContext)
 
 const MyProvider = ({ children }) => {
   const value = useManageValue()
