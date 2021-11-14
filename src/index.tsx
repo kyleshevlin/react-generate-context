@@ -53,7 +53,7 @@ export default function generateContext<Props, Context>(
   const useThisContext = () => {
     const context = React.useContext(Ctx)
 
-    if (requireProvider && !context) {
+    if (requireProvider && context === undefined) {
       throw new Error(missingProviderMessage)
     }
 
