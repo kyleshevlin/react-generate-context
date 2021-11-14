@@ -3,7 +3,7 @@ import { render, fireEvent, screen } from '@testing-library/react'
 import generateContext from '../src'
 
 type Props = {
-  initialState: number
+  initialState?: number
 }
 
 type Context = [
@@ -14,7 +14,7 @@ type Context = [
   }
 ]
 
-const useCounterValueGetter = ({ initialState }: Props): Context => {
+const useCounterValueGetter = ({ initialState = 0 }: Props): Context => {
   const [state, setState] = React.useState(initialState)
   const handlers = React.useMemo(
     () => ({
@@ -31,18 +31,25 @@ const useCounterValueGetter = ({ initialState }: Props): Context => {
   return [state, handlers]
 }
 
+const noop = () => {}
+
+const defaultValue: Context = [
+  100,
+  {
+    inc: noop,
+    dec: noop,
+  },
+]
+
 describe('generateContext', () => {
   test('Standard usage', () => {
     const [CounterProvider, useCounter] = generateContext<Props, Context>(
-      useCounterValueGetter
+      useCounterValueGetter,
+      defaultValue
     )
 
     const Counter = () => {
-      const counter = useCounter()
-
-      if (!counter) return null
-
-      const [count, { inc, dec }] = counter
+      const [count, { inc, dec }] = useCounter()
 
       return (
         <div>
@@ -64,115 +71,42 @@ describe('generateContext', () => {
     expect(screen.getByText('0')).toBeDefined()
 
     fireEvent.click(screen.getByText('+'))
-
     expect(screen.getByText('1')).toBeDefined()
 
     fireEvent.click(screen.getByText('-'))
-
     expect(screen.getByText('0')).toBeDefined()
   })
 
-  describe('Errors', () => {
-    /**
-     * These tests throw nasty console.errors, so we make console.error a noop
-     * for this suite and reset it afterwards.
-     */
-    // Store the current console.error function
-    const errorLogger = console.error
+  test('Outside of Provider', () => {
+    const [, useCounter] = generateContext<Props, Context>(
+      useCounterValueGetter,
+      defaultValue
+    )
 
-    beforeAll(() => {
-      // Noop it before the tests
-      console.error = () => {}
-    })
+    const Counter = () => {
+      const [count, { inc, dec }] = useCounter()
 
-    afterAll(() => {
-      // Reset it after the tests
-      console.error = errorLogger
-    })
-
-    it('should error if using the hook outside of the provider by default', () => {
-      const [, useCounter] = generateContext<Props, Context>(
-        useCounterValueGetter
-      )
-
-      const Counter = () => {
-        const counter = useCounter()
-
-        if (!counter) return null
-
-        const [count, { inc, dec }] = counter
-
-        return (
+      return (
+        <div>
+          {count}
           <div>
-            {count}
-            <div>
-              <button onClick={inc}>+</button>
-              <button onClick={dec}>-</button>
-            </div>
+            <button onClick={inc}>+</button>
+            <button onClick={dec}>-</button>
           </div>
-        )
-      }
-
-      expect(() => render(<Counter />)).toThrow()
-    })
-
-    it('should disable error throwing with requireProvider: false', () => {
-      const [, useCounter] = generateContext<Props, Context>(
-        useCounterValueGetter,
-        {
-          requireProvider: false,
-        }
+        </div>
       )
+    }
 
-      const Counter = () => {
-        const counter = useCounter()
+    render(<Counter />)
 
-        if (!counter) return null
+    // Should match the string of the defaultValue count value
+    expect(screen.getByText('100')).toBeDefined()
 
-        const [count, { inc, dec }] = counter
+    // Clicking should do nothing, since they are noops
+    fireEvent.click(screen.getByText('+'))
+    expect(screen.getByText('100')).toBeDefined()
 
-        return (
-          <div>
-            {count}
-            <div>
-              <button onClick={inc}>+</button>
-              <button onClick={dec}>-</button>
-            </div>
-          </div>
-        )
-      }
-
-      expect(() => render(<Counter />)).not.toThrow()
-    })
-
-    it('should use custom error message if missingProviderMessage is set', () => {
-      const customMessage = 'My special message'
-      const [, useCounter] = generateContext<Props, Context>(
-        useCounterValueGetter,
-        {
-          missingProviderMessage: customMessage,
-        }
-      )
-
-      const Counter = () => {
-        const counter = useCounter()
-
-        if (!counter) return null
-
-        const [count, { inc, dec }] = counter
-
-        return (
-          <div>
-            {count}
-            <div>
-              <button onClick={inc}>+</button>
-              <button onClick={dec}>-</button>
-            </div>
-          </div>
-        )
-      }
-
-      expect(() => render(<Counter />)).toThrow(customMessage)
-    })
+    fireEvent.click(screen.getByText('-'))
+    expect(screen.getByText('100')).toBeDefined()
   })
 })
