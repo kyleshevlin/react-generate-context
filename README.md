@@ -110,7 +110,7 @@ yarn add react-generate-context
 ```typescript
 const [MyProvider, useMyContext] = generateContext<Context, Props>(
   useGetContextValue,
-  options
+  defaultValue
 )
 ```
 
