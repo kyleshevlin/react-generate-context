@@ -6,15 +6,27 @@ Creating a new React Context involves a few steps. `react-generate-context` remo
 
 The `react-generate-context` package is a single function, `generateContext`, that generates a React Context (in closure) and returns to you the Provider and custom hook to access it in one step. All you need to do is give it a function that creates and updates the `value` prop for your Context. Let's go through an example:
 
-```javascript
+```tsx
 import generateContext from 'react-generate-context'
+
+type Context = [
+  0,
+  {
+    inc: () => void
+    dec: () => void
+  }
+]
+
+type Props = {
+  startingCount: number
+}
 
 /**
  * `generateContext` receives a custom hook function that manages the `value`
  * passed to the Provider under the hood. The function takes any `props` passed
  * to the Provider
  */
-const useGetCounterValue = ({ startingCount }) => {
+const useGetCounterValue = ({ startingCount }: Props): Context => {
   const [state, setState] = React.useState(startingCount)
   const handlers = React.useMemo(
     () => ({
@@ -32,11 +44,25 @@ const useGetCounterValue = ({ startingCount }) => {
 }
 
 /**
+ * The defaultValue to be passed to the underlying `createContext` function
+ */
+const defaultValue: Context = [
+  0,
+  {
+    inc: () => {},
+    dec: () => {},
+  },
+]
+
+/**
  * generateContext returns a tuple of a Provider and a custom
  * hook to consume the context. Array destructuring allows you
  * to name the Provider and hook whatever you need to easily
  */
-const [CounterProvider, useCounter] = generateContext(useGetCounterValue)
+const [CounterProvider, useCounter] = generateContext<Context, Props>(
+  useGetCounterValue,
+  defaultValue
+)
 
 /**
  * We can consume that context in a component with the hook
@@ -81,11 +107,14 @@ yarn add react-generate-context
 
 ## API
 
-```javascript
-const [MyProvider, useMyContext] = generateContext(useGetContextValue, options)
+```typescript
+const [MyProvider, useMyContext] = generateContext<Context, Props>(
+  useGetContextValue,
+  options
+)
 ```
 
-`generateContext` receives two arguments: `useGetContextValue` and any `options` for your context.
+`generateContext` receives two arguments: `useGetContextValue` and the `defaultValue` for your Context.
 
 #### `useGetContextValue`
 
@@ -128,26 +157,9 @@ const useGetCounterValue = ({ startingCount }: Props): Context => {
 }
 ```
 
-#### `options`
+#### `defaultValue`
 
-`options` is an object for configuring settings for your context. The options are:
-
-- `defaultContext` - A `value` passed to `React.createContext`
-
-- `requireProvider` - Set to `false` if its ok to use the returned hook without the Provider as a parent
-
-- `missingProviderMessage` - A custom message to use as the error message for using the hook outside of the Provider
-
-The defaults are:
-
-```javascript
-const DEFAULT_OPTIONS = {
-  defaultContext: undefined,
-  requireProvider: true,
-  missingProviderMessage:
-    'The hook for this context cannot be used outside of its Provider',
-}
-```
+`defaultValue` is the value utilized by the Context when a Consumer is rendered without a Provider as a parent. It is passed to `React.createContext` under the hood.
 
 ## Why?
 
@@ -160,7 +172,9 @@ import React from 'react'
 import SomeOtherFeature from './SomeOtherFeature'
 import useManageValue from './useManageValue'
 
-const MyContext = React.createContext()
+const defaultValue = {}
+
+const MyContext = React.createContext(defaultValue)
 const useMyContext = () => React.useContext(MyContext)
 
 const MyProvider = ({ children }) => {
