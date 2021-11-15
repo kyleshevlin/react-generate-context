@@ -43,7 +43,7 @@ const defaultValue: Context = [
 
 describe('generateContext', () => {
   test('Standard usage', () => {
-    const [CounterProvider, useCounter] = generateContext<Props, Context>(
+    const [CounterProvider, useCounter] = generateContext<Context, Props>(
       useCounterValueGetter,
       defaultValue
     )
@@ -78,7 +78,7 @@ describe('generateContext', () => {
   })
 
   test('Outside of Provider', () => {
-    const [, useCounter] = generateContext<Props, Context>(
+    const [, useCounter] = generateContext<Context, Props>(
       useCounterValueGetter,
       defaultValue
     )

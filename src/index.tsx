@@ -14,7 +14,7 @@ type Hook<Context> = () => Context
  * @arg useGetContextValue - A custom hook function used to get the `value` prop passed to the generated Provider
  * @arg defaultValue - The default Context value when a Consumer has no parent Provider
  */
-export default function generateContext<Props, Context>(
+export default function generateContext<Context, Props>(
   useGetContextValue: UseGetContextValue<Props, Context>,
   defaultValue: Context
 ): [Provider<Props>, Hook<Context>] {
