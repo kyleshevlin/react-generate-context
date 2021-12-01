@@ -4,39 +4,24 @@ type Children = { children: React.ReactNode }
 
 type UseGetContextValue<Props, Context> = (props: Props) => Context
 
-type Options<Context> = {
-  defaultContext?: Context
-  requireProvider?: boolean
-  missingProviderMessage?: string
-}
-
 type Provider<Props> = (props: Props & Children) => JSX.Element
 
-type Hook<Context> = () => Context | undefined
-
-const defaultMissingProviderMessage =
-  'The hook for this context cannot be used outside of its Provider'
+type Hook<Context> = () => Context
 
 /**
  * A function for generating a Provider and Hook for a React Context
  *
  * @arg useGetContextValue - A custom hook function used to get the `value` prop passed to the generated Provider
- * @arg options - Additional options for generating the Context
+ * @arg defaultValue - The default Context value when a Consumer has no parent Provider
  */
-export default function generateContext<Props, Context>(
+export default function generateContext<Context, Props>(
   useGetContextValue: UseGetContextValue<Props, Context>,
-  options: Options<Context> = {}
+  defaultValue: Context
 ): [Provider<Props>, Hook<Context>] {
-  const {
-    defaultContext,
-    requireProvider = true,
-    missingProviderMessage = defaultMissingProviderMessage,
-  } = options
-
   /**
-   * Creates a Context in closure
+   * The generated Context
    */
-  const Ctx = React.createContext(defaultContext)
+  const Ctx = React.createContext(defaultValue)
 
   /**
    * The Provider with which to use this Context
@@ -50,15 +35,7 @@ export default function generateContext<Props, Context>(
   /**
    * The hook for consuming the generated Context
    */
-  const useThisContext = () => {
-    const context = React.useContext(Ctx)
-
-    if (requireProvider && context === undefined) {
-      throw new Error(missingProviderMessage)
-    }
-
-    return context
-  }
+  const useThisContext = () => React.useContext(Ctx)
 
   return [Provider, useThisContext]
 }
