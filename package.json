@@ -1,62 +1,48 @@
 {
+  "name": "react-generate-context",
   "version": "2.0.0",
+  "description": "Factory function for React Contexts",
+  "author": "Kyle Shevlin <kyle.a.shevlin@gmail.com> (https://kyleshevlin.com/)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyleshevlin/react-generate-context.git"
+  },
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "type": "module",
+  "source": "src/index.tsx",
+  "main": "./dist/react-generate-context.cjs",
+  "module": "./dist/react-generate-context.module.js",
+  "unpkg": "./dist/react-generate-context.umd.js",
   "files": [
     "dist",
     "src"
   ],
-  "engines": {
-    "node": ">=10"
+  "exports": {
+    "require": "./dist/react-generate-context.cjs",
+    "default": "./dist/react-generate-context.modern.js",
+    "types": "./dist/src/index.d.ts"
   },
+  "types": "dist/src/index.d.ts",
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test --passWithNoTests",
-    "lint": "tsdx lint",
-    "prepare": "tsdx build",
-    "size": "size-limit",
-    "analyze": "size-limit --why"
+    "build": "microbundle --jsx React.createElement --jsxFragment React.Fragment --jsxImportSource react",
+    "dev": "microbundle watch --jsx React.createElement --jsxFragment React.Fragment --jsxImportSource react",
+    "prerelease": "rm -rf dist && npm run build",
+    "release": "npx np",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "format": "prettier --write src/**/*.tsx"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "@types/jest": "^29.5.4",
+    "@types/react": "^18.2.21",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "microbundle": "^0.15.1",
+    "prettier": "^2.8.1",
+    "ts-jest": "^29.1.1"
   },
   "peerDependencies": {
-    "react": ">=16"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
-  "name": "react-generate-context",
-  "author": "Kyle Shevlin",
-  "module": "dist/react-generate-context.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/react-generate-context.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/react-generate-context.esm.js",
-      "limit": "10 KB"
-    }
-  ],
-  "devDependencies": {
-    "@size-limit/preset-small-lib": "^6.0.3",
-    "@testing-library/react": "^12.1.2",
-    "@types/react": "^17.0.30",
-    "@types/react-dom": "^17.0.9",
-    "husky": "^7.0.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "size-limit": "^6.0.3",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.3.1",
-    "typescript": "^4.4.4"
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
   }
 }
