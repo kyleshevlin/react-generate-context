@@ -10,7 +10,7 @@ The `react-generate-context` package is a single function, `generateContext`, th
 import generateContext from 'react-generate-context'
 
 type Context = [
-  0,
+  number,
   {
     inc: () => void
     dec: () => void
@@ -44,7 +44,7 @@ const useGetCounterValue = ({ startingCount }: Props): Context => {
 }
 
 /**
- * The defaultValue to be passed to the underlying `createContext` function
+ * An optional defaultValue can be passed to the underlying `createContext` function
  */
 const defaultValue: Context = [
   0,
@@ -114,7 +114,7 @@ const [MyProvider, useMyContext] = generateContext<Context, Props>(
 )
 ```
 
-`generateContext` receives two arguments: `useGetContextValue` and the `defaultValue` for your Context.
+`generateContext` receives two arguments: `useGetContextValue` and an optional `defaultValue` for your Context.
 
 #### `useGetContextValue`
 
