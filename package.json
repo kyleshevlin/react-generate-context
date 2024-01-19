@@ -13,6 +13,9 @@
   "main": "./dist/react-generate-context.cjs",
   "module": "./dist/react-generate-context.module.js",
   "unpkg": "./dist/react-generate-context.umd.js",
+  "files": [
+    "dist"
+  ],
   "exports": {
     "require": "./dist/react-generate-context.cjs",
     "default": "./dist/react-generate-context.modern.js",
