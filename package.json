@@ -16,10 +16,13 @@
   "files": [
     "dist"
   ],
+  "// exports notes": [
+    "The 'default' export must be the last one https://stackoverflow.com/a/76127619/2347675"
+  ],
   "exports": {
+    "types": "./dist/src/index.d.ts",
     "require": "./dist/react-generate-context.cjs",
-    "default": "./dist/react-generate-context.modern.js",
-    "types": "./dist/src/index.d.ts"
+    "default": "./dist/react-generate-context.modern.js"
   },
   "types": "dist/src/index.d.ts",
   "scripts": {
