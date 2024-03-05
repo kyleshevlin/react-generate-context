@@ -1,6 +1,6 @@
 {
   "name": "react-generate-context",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Factory function for React Contexts",
   "author": "Kyle Shevlin <kyle.a.shevlin@gmail.com> (https://kyleshevlin.com/)",
   "repository": {
